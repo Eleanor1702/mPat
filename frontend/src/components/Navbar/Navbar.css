@@ -1,0 +1,17 @@
+.navbar-brand-label {
+    vertical-align: middle;
+    font-family: Helvetica;
+    font-size: large;
+    font-weight: 700;
+    margin-left: .5rem;
+    margin-top: .3rem;
+}
+
+.is-hidden {
+    display: none;
+}
+
+.is-circle {
+    border-radius: 10rem;
+    padding: 7px;
+}

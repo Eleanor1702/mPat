@@ -1,0 +1,21 @@
+.boxy {
+    background-color: aquamarine;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.col {
+    margin-top: 5px;
+}
+
+.has-no-border-bottom {
+    border-bottom: unset !important;
+}
+
+.is-halfWidth {
+    width: 50%;
+}
+
+.is-centered {
+    justify-content: center;
+}
