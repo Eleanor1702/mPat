@@ -10,11 +10,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using  Microsoft.AspNetCore.Cors;
 
 namespace Backend
 {
-    public class Startup
-    {
+    public class Startup {
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -23,25 +23,30 @@ namespace Backend
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddControllers();
+        public void ConfigureServices(IServiceCollection services) {
+            //CORS Services
+            services.AddCors(options => {
+                options.AddPolicy("AllowCors", builder => {
+                    builder.WithOrigins("http://localhost:3000")
+                    .WithMethods("GET", "PUT", "POST", "DELETE")
+                    .AllowAnyHeader();
+                });
+            });
             //AppDb is now available to controller methods
             services.AddTransient<AppDb>(a => new AppDb(Configuration["ConnectionStrings:DefaultConnection"]));
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+            if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
             }
 
-            // app.UseHttpsRedirection();
-
+            app.UseHttpsRedirection();
             app.UseRouting();
-
+            //Allow CORS (Cross-Origin-Resource Sharing) from this domain
+            app.UseCors("AllowCors"); 
             app.UseAuthorization();
 
             //Set default routes
