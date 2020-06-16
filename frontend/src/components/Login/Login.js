@@ -1,7 +1,6 @@
 import React from 'react';
 import './Login.css';
 import axios from 'axios';
-import Mainpage from '../Mainpage/Mainpage';
 
 class Login extends React.Component {
     constructor(props) { 
@@ -11,7 +10,9 @@ class Login extends React.Component {
             registrationNr: "",
             passHasErrors: false,
             password: "",
-            processRequested: false
+            loginRequested: false,
+            processRequested: false,
+            showLogoutNotification: this.props.userLoggedOut
         };
         
         //This binding is necessary to make 'this' work in the callback
@@ -22,51 +23,52 @@ class Login extends React.Component {
         this.requestLogin = this.requestLogin.bind(this);
         this.isRegNrValid = this.isRegNrValid.bind(this);
         this.isPassValid = this.isPassValid.bind(this);
+        this.removeLogOutNotification = this.removeLogOutNotification.bind(this);
+    }
+
+    removeLogOutNotification() {
+        this.setState ({
+            showLogoutNotification: false
+        })
     }
 
     requestLogin() {
         const { registrationNr, password } = this.state;
         
-        if(!this.isRegNrValid()) {
-            this.setState({
-                processRequested: false
-            });
-        }else if (!this.isPassValid()) {
-            this.setState({
+        if(!this.isRegNrValid() || !this.isPassValid()) {
+            this.setState ({
                 processRequested: false
             })
         }else{
             axios.post('http://localhost:5000/authentication', {
                 registrationNr: registrationNr,
                 passKey: password
-            }).then(() => {
-                console.log("LogIN");
+            }).then((organisation) => {
+                console.log(organisation);
                 //Manipulate a value in Parent through the callback function
                 //Set 'isLoggedIn' to true, when a user has successfully logged in
-                this.props.setLoggedIn(true);
+                this.props.loginUser(organisation.data);
             }).catch(() => {
                 console.log("Error!!!!!")
                 this.setState({
-                    processRequested: false,
                     regNrHasErrors: true,
-                    passHasErrors: true
+                    passHasErrors: true,
+                    processRequested: false
                 })
             });
         }
     }
 
     handleLoginClick(event) {
-        const { value } = event.target;
-        
         this.setState ({
             processRequested: true
-        }, 
-        () => this.requestLogin());
+        });
+        this.requestLogin();
     }
 
     isRegNrValid() {
         const { registrationNr } = this.state;
-        if(registrationNr == null || registrationNr == "") {
+        if(registrationNr === null || registrationNr === "") {
             this.setState ({
                 regNrHasErrors: true
             });
@@ -81,7 +83,7 @@ class Login extends React.Component {
 
     isPassValid() {
         const { password } = this.state;
-        if(password == null || password == "") {
+        if(password === null || password === "") {
             this.setState ({
                 passHasErrors: true
             });
@@ -95,7 +97,7 @@ class Login extends React.Component {
     }
 
     validateInput(identifier) {
-        if(identifier == "regNr") {
+        if(identifier === "regNr") {
             this.isRegNrValid();
         }else{
             this.isPassValid();
@@ -123,40 +125,47 @@ class Login extends React.Component {
     }
 
     render() {
-        const { regNrHasErrors, passHasErrors, processRequested } = this.state;
+        const { regNrHasErrors, passHasErrors, processRequested, showLogoutNotification } = this.state;
 
         return (
-            <div className="columns is-centered col">
-                <div className="column is-two-fifths">
-                    <div className="panel is-info is-centered">
-                        <p className="panel-heading">
-                            Login
-                        </p>
-                        <div className="panel-block has-no-border-bottom">
-                            <p className="control has-icons-left has-icons-right">
-                                <input className={`input ${regNrHasErrors ? "is-danger" : ""}`} type="text" placeholder="Registration Number" onChange={this.handleRegNrChange} />
-                                <span className="icon is-small is-left">
-                                    <i className="far fa-user"></i>
-                                </span>
-                            </p>
-                        </div>
-                        <div className="panel-block has-no-border-bottom">
-                            <p className="control has-icons-left">
-                                <input className={`input ${passHasErrors ? "is-danger" : ""}`} type="password" placeholder="Password" onChange={this.handlePassChange} />
-                                <span className="icon is-small is-left">
-                                    <i className="fas fa-lock"></i>
-                                </span>
-                            </p>
-                        </div>
-                        <div className="panel-block is-centered">
-                            <button className={`button is-info is-halfWidth ${processRequested ? "is-loading" : ""}`} onClick={this.handleLoginClick}>
-                                Login
-                            </button>
-                        </div>
-                        
-                    </div>
+            <div>
+                <div className={`notification is-success margin-1rem is-light ${showLogoutNotification ? "" : "is-hidden"}`}>
+                    <button className="delete" onClick={this.removeLogOutNotification}></button>
+                        You have been successfully logged out!
                 </div>
-            </div> 
+
+                <div className="columns is-centered col">
+                    <div className="column is-two-fifths">
+                        <div className="panel is-info is-centered">
+                            <p className="panel-heading">
+                                Login
+                            </p>
+                            <div className="panel-block has-no-border-bottom">
+                                <p className="control has-icons-left has-icons-right">
+                                    <input className={`input ${regNrHasErrors ? "is-danger" : ""}`} type="text" placeholder="Registration Number" onChange={this.handleRegNrChange} />
+                                    <span className="icon is-small is-left">
+                                        <i className="far fa-user"></i>
+                                    </span>
+                                </p>
+                            </div>
+                            <div className="panel-block has-no-border-bottom">
+                                <p className="control has-icons-left">
+                                    <input className={`input ${passHasErrors ? "is-danger" : ""}`} type="password" placeholder="Password" onChange={this.handlePassChange} />
+                                    <span className="icon is-small is-left">
+                                        <i className="fas fa-lock"></i>
+                                    </span>
+                                </p>
+                            </div>
+                            <div className="panel-block is-centered">
+                                <button className={`button is-info is-halfWidth ${processRequested ? "is-loading" : ""}`} onClick={this.handleLoginClick}>
+                                    Login
+                                </button>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div> 
+            </div>
         );
     }
 }

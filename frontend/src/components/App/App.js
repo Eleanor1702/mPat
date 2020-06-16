@@ -8,24 +8,49 @@ class App extends React.Component {
   constructor(props) { 
       super(props);
       this.state = {
-          isLoggedIn: false
+          //Signed to 'false' -> No user is available
+          //Signed to 'true' -> User is available
+          isLoggedIn: false,
+          isLoggedOut: false,
+          organisation: {
+              name: "",
+              token: ""
+          }
       }
 
-      this.setLoggedIn = this.setLoggedIn.bind(this);
+      this.loginUser = this.loginUser.bind(this);
+      this.logoutUser = this.logoutUser.bind(this);
   }
 
   //Callback function => allows sending values from Child to Parent
-  setLoggedIn(status) {
+  loginUser(organisation) {
       this.setState ({
-          isLoggedIn: status
+          isLoggedIn: true,
+          isLoggedOut: false,
+          organisation: {
+              name: organisation.name,
+              token: organisation.token
+          }
+      });
+  }
+
+  //Callback func {App.js - Navbar.js}
+  logoutUser() {
+      this.setState ({
+          isLoggedIn: false,
+          isLoggedOut: true,
+          organisation: {
+              name: "",
+              token: ""
+          }
       });
   }
 
   render() {
-    const { isLoggedIn } = this.state;
+    const { isLoggedIn, isLoggedOut, organisation } = this.state;
 
     /*Setting a prop connected to the callback*/
-    var content = <Login setLoggedIn = {this.setLoggedIn} />;
+    var content = <Login userLoggedOut = {isLoggedOut} loginUser = {this.loginUser} />;
     /*Conditional calling depending on isLoggedIn value*/
     if(isLoggedIn) {
         content = <Mainpage />;
@@ -33,7 +58,7 @@ class App extends React.Component {
 
     return (
       <div>
-        <Navbar userIsLoggedIn = {this.state.isLoggedIn} />
+        <Navbar logoutUser = {this.logoutUser} userIsLoggedIn = {isLoggedIn} orgName = {organisation.name} />
         {content}
         <Footer />
       </div>

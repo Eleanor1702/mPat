@@ -9,8 +9,8 @@ class Mainpage extends React.Component {
 
     render() {
         return (
-            <div class="container is-fluid margin-top">
-                <div class="notification">
+            <div className="container is-fluid top-marg-1rem bot-marg-1rem">
+                <div className="notification">
                     Body
                 </div>
             </div>

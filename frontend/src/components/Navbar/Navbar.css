@@ -7,11 +7,19 @@
     margin-top: .3rem;
 }
 
-.is-hidden {
-    display: none;
-}
-
 .is-circle {
     border-radius: 10rem;
     padding: 7px;
+}
+
+.is-transparent {
+    background-color: transparent !important;
+}
+
+.has-default-cursor {
+    cursor: default !important;
+}
+
+#userName, #userName:hover {
+    color: #3273dc;
 }
