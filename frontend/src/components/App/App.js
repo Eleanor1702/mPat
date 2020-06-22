@@ -3,6 +3,7 @@ import Login from '../Login/Login';
 import Navbar from '../Navbar/Navbar';
 import Footer from '../Footer/Footer';
 import Mainpage from '../Mainpage/Mainpage';
+import './App.css';
 
 class App extends React.Component {
   constructor(props) { 
@@ -57,9 +58,11 @@ class App extends React.Component {
     }
 
     return (
-      <div>
-        <Navbar logoutUser = {this.logoutUser} userIsLoggedIn = {isLoggedIn} orgName = {organisation.name} />
-        {content}
+      <div id="wrapper-parent">
+        <div id="wrapper">
+            <Navbar logoutUser = {this.logoutUser} userIsLoggedIn = {isLoggedIn} orgName = {organisation.name} />
+            {content}
+        </div>
         <Footer />
       </div>
     );

@@ -23,3 +23,7 @@
 .margin-1rem {
     margin: 1rem;
 }
+
+#login-panel {
+    margin-top: calc(50vh - 52px - 223px);
+}

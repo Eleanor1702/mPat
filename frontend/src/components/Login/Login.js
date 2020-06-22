@@ -24,6 +24,14 @@ class Login extends React.Component {
         this.isRegNrValid = this.isRegNrValid.bind(this);
         this.isPassValid = this.isPassValid.bind(this);
         this.removeLogOutNotification = this.removeLogOutNotification.bind(this);
+        this.handleKeyDown = this.handleKeyDown.bind(this);
+    }
+
+    //Allow Enter Key Down for submitting the form
+    handleKeyDown(event) {
+        if(event.key === 'Enter') {
+            this.handleLoginClick();
+        }
     }
 
     removeLogOutNotification() {
@@ -59,7 +67,7 @@ class Login extends React.Component {
         }
     }
 
-    handleLoginClick(event) {
+    handleLoginClick() {
         this.setState ({
             processRequested: true
         });
@@ -136,13 +144,17 @@ class Login extends React.Component {
 
                 <div className="columns is-centered col">
                     <div className="column is-two-fifths">
-                        <div className="panel is-info is-centered">
+                        <div id="login-panel" className="panel is-info is-centered">
                             <p className="panel-heading">
                                 Login
                             </p>
                             <div className="panel-block has-no-border-bottom">
                                 <p className="control has-icons-left has-icons-right">
-                                    <input className={`input ${regNrHasErrors ? "is-danger" : ""}`} type="text" placeholder="Registration Number" onChange={this.handleRegNrChange} />
+                                    <input className={`input ${regNrHasErrors ? "is-danger" : ""}`}
+                                           type="text" 
+                                           placeholder="Registration Number" 
+                                           onChange={this.handleRegNrChange} 
+                                           onKeyDown={this.handleKeyDown}/>
                                     <span className="icon is-small is-left">
                                         <i className="far fa-user"></i>
                                     </span>
@@ -150,7 +162,11 @@ class Login extends React.Component {
                             </div>
                             <div className="panel-block has-no-border-bottom">
                                 <p className="control has-icons-left">
-                                    <input className={`input ${passHasErrors ? "is-danger" : ""}`} type="password" placeholder="Password" onChange={this.handlePassChange} />
+                                    <input className={`input ${passHasErrors ? "is-danger" : ""}`} 
+                                           type="password" 
+                                           placeholder="Password" 
+                                           onChange={this.handlePassChange} 
+                                           onKeyDown={this.handleKeyDown} />
                                     <span className="icon is-small is-left">
                                         <i className="fas fa-lock"></i>
                                     </span>
