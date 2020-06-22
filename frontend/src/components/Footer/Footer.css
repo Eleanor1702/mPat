@@ -1,3 +1,11 @@
-.paddin-left-right-2rem {
-    padding: 0 2.5rem;
+.footer-menu-item {
+    padding: 0 0.5rem;
+    display: inline;
+}
+
+#footer-menu {
+    padding: 1.25rem;
+    background-color: #f5f5f5;
+    color: #858585;
+    font-size: 12px;
 }
