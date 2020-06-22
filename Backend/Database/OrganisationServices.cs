@@ -11,25 +11,44 @@ namespace Backend {
             Db = newDb;
         }
 
-        public Organisation FindByRegNrAndPassKey(string regNr, string pass) {
-            Db.Connection.Open();
-            var cmd = Db.Connection.CreateCommand();
+        public Organisation FindByToken(string newToken) {
+            return InitiateConnectionAndExecuteQuery((cmd) => {
+                cmd.CommandText = @"SELECT Id, Name FROM Organisation
+                                    WHERE Token = @newToken";
 
-            cmd.CommandText = @"SELECT Id, Name FROM Organisation 
+                cmd.Parameters.Add(new MySqlParameter {
+                    ParameterName = "@newToken",
+                    DbType = DbType.StringFixedLength,
+                    Value = newToken,
+                });
+            });
+        }
+
+        public Organisation FindByRegNrAndPassKey(string regNr, string pass) {
+            return InitiateConnectionAndExecuteQuery((cmd) => {
+                cmd.CommandText = @"SELECT Id, Name FROM Organisation 
                                 WHERE RegistrationNr = @RegistrationNr 
                                 AND PassKey = SHA2(@PassKey, 256)";
 
-            cmd.Parameters.Add(new MySqlParameter {
-                ParameterName = "@RegistrationNr",
-                DbType = DbType.StringFixedLength,
-                Value = regNr,
-            });
+                cmd.Parameters.Add(new MySqlParameter {
+                    ParameterName = "@RegistrationNr",
+                    DbType = DbType.StringFixedLength,
+                    Value = regNr,
+                });
 
-            cmd.Parameters.Add(new MySqlParameter {
-                ParameterName = "@PassKey",
-                DbType = DbType.StringFixedLength,
-                Value = pass,
+                cmd.Parameters.Add(new MySqlParameter {
+                    ParameterName = "@PassKey",
+                    DbType = DbType.StringFixedLength,
+                    Value = pass,
+                });
             });
+        }
+
+        private Organisation InitiateConnectionAndExecuteQuery(Action<MySqlCommand> action) {
+            Db.Connection.Open();
+            var cmd = Db.Connection.CreateCommand();
+
+            action(cmd);
 
             var reader = cmd.ExecuteReader();
 
@@ -42,7 +61,7 @@ namespace Backend {
             }
 
             Db.Connection.Close();
-            throw new NotFoundException("Request credentials aren't correct!");
+            return null;
         }
 
         public Organisation RegisterNewLogin(Organisation org) {
@@ -68,14 +87,14 @@ namespace Backend {
             cmd.Parameters.Add(new MySqlParameter {
                 ParameterName = "@id",
                 DbType = DbType.StringFixedLength,
-                Value = id
+                Value = 123
             });
 
             var affectedRows = cmd.ExecuteNonQuery();
+            Db.Connection.Close();
 
             if(affectedRows <= 0) {
-                throw new UpdateFailedException("Updating Token and LastLogin is failed! " +
-                                                "Please check the database!");
+                throw new QueryFailedException("Database update has not been successfully made!");
             }
         }
 

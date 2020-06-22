@@ -1,4 +1,6 @@
+using Backend.Models.Requests;
 using Microsoft.AspNetCore.Mvc;
+using MySql.Data.MySqlClient;
 
 namespace Backend.Controllers {
 
@@ -14,22 +16,24 @@ namespace Backend.Controllers {
 
         [HttpPost]
         public IActionResult LogIn([FromBody] LoginRequest request) {
-            OrganisationServices organisationService = new OrganisationServices(Db);
+            OrganisationServices orgService = new OrganisationServices(Db);
 
             try {
-                var org = organisationService.FindByRegNrAndPassKey(request.registrationNr, request.passKey);
-                return Ok(organisationService.RegisterNewLogin(org));
+                var org = orgService.FindByRegNrAndPassKey(request.registrationNr, request.passKey);
+                if(org != null) {
+                    return Ok(orgService.RegisterNewLogin(org));
+                }
 
-            } catch (NotFoundException notFound) {
-                System.Console.WriteLine("Developer Mode: " + notFound.Message);
-                //TODO: front end reaction
-                return Unauthorized(new GenericResponse("error", "Invalid login credentials"));
-
-            } catch (UpdateFailedException update) {
+            } catch (MySqlException mySql) {
+                System.Console.WriteLine("Developer Mode: " + mySql.Message);
+                return StatusCode(500, new GenericResponse("Error!", "Please contact the administration"));
+                
+            } catch (QueryFailedException update) {
                 System.Console.WriteLine("Developer Mode: " + update.Message);
-                //TODO: front end reaction
-                return Unauthorized(new GenericResponse("error", "Invalid login credentials"));
+                return BadRequest(new GenericResponse("Error!", "Please contact the administration"));
             }
+
+            return Unauthorized(new GenericResponse("Error!", "Invalid login credentials!"));
         }
     }
 }   

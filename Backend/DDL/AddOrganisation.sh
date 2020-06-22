@@ -1,3 +1,7 @@
+#This script is provided only for the use of project developer
+#This script adds new organsation to the database allowing the new organisation to 
+#access the plattform and its features
+
 #parameters
 USER=$1
 PASS=$2
