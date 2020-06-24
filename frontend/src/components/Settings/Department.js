@@ -19,16 +19,16 @@ class Department extends React.Component {
         } = this.props;
 
         return (
-            <tr>
-                <th>{id}</th>
-                <td>{name}</td>
-                <td>{wipThreshold}</td>
-                <td>{createdAt}</td>
-                <td>{updatedAt}</td>
-                <td>
-                    <button className="button is-fullwidth is-small">Edit</button>
-                </td>
-            </tr>
+					<tr>
+							<th>{id}</th>
+							<td>{name}</td>
+							<td>{wipThreshold}</td>
+							<td>{createdAt}</td>
+							<td>{updatedAt}</td>
+							<td>
+									<button className="button is-fullwidth is-small">Edit</button>
+							</td>
+					</tr>
         );
     }
 }

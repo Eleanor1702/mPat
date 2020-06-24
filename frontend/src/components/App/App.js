@@ -69,7 +69,7 @@ class App extends React.Component {
     const { isLoggedIn, isLoggedOut, organisation, showSettings } = this.state;
 
     /*Setting a prop connected to the callback*/
-    var content = <Login userLoggedOut = {isLoggedOut} loginUser = {this.loginUser} />;
+		var content = <Login userLoggedOut = {isLoggedOut} loginUser = {this.loginUser} />;
     /* Conditional calling depending on isLoggedIn value */
     if(isLoggedIn) {
       /* Conditional calling depending on showSettings value */
@@ -83,8 +83,12 @@ class App extends React.Component {
     return (
       <div id="wrapper-parent">
         <div id="wrapper">
-            <Navbar logoutUser = {this.logoutUser} userIsLoggedIn = {isLoggedIn} orgName = {organisation.name} 
-                    navigateToHomepage = {this.navigateToHomepage}  navigateToSettings = {this.navigateToSettings} />
+						<Navbar logoutUser = {this.logoutUser} 
+										userIsLoggedIn = {isLoggedIn} 
+										orgName = {organisation.name} 
+										navigateToHomepage = {this.navigateToHomepage}  
+										navigateToSettings = {this.navigateToSettings} 
+						/>
             {content}
         </div>
         <Footer />

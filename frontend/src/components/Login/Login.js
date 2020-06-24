@@ -173,7 +173,8 @@ class Login extends React.Component {
                                 </p>
                             </div>
                             <div className="panel-block is-centered">
-                                <button className={`button is-info is-halfWidth ${processRequested ? "is-loading" : ""}`} onClick={this.handleLoginClick}>
+																<button className={`button is-info is-halfWidth ${processRequested ? "is-loading" : ""}`} 
+																				onClick={this.handleLoginClick}>
                                     Login
                                 </button>
                             </div>

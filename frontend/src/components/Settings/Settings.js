@@ -14,10 +14,18 @@ class Settings extends React.Component {
     }
 
     getDepartments() {
-        axios.get('http://localhost:5000/departments', {headers: {token: this.props.userToken}}).then((departments) => {
-            this.setState ({
-                departments: departments.data
-            })
+			//To get all Department, a token verification is necessary. While this is a 'get' request
+			//axios allow headers to pass data from Frontend to backend
+				axios.get(
+					'http://localhost:5000/departments', {
+						headers: {
+							token: this.props.userToken
+						}
+					}
+				).then((departments) => {
+					this.setState ({
+							departments: departments.data
+					})
         }).catch((reason) => {
             console.log(reason);
         });
