@@ -87,7 +87,7 @@ namespace Backend {
             cmd.Parameters.Add(new MySqlParameter {
                 ParameterName = "@id",
                 DbType = DbType.StringFixedLength,
-                Value = 123
+                Value = id
             });
 
             var affectedRows = cmd.ExecuteNonQuery();
