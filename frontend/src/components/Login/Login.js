@@ -52,7 +52,6 @@ class Login extends React.Component {
                 registrationNr: registrationNr,
                 passKey: password
             }).then((organisation) => {
-                console.log(organisation);
                 //Manipulate a value in Parent through the callback function
                 //Set 'isLoggedIn' to true, when a user has successfully logged in
                 this.props.loginUser(organisation.data);
@@ -137,7 +136,8 @@ class Login extends React.Component {
 
         return (
             <div>
-                <div className={`notification is-success margin-1rem is-light ${showLogoutNotification ? "" : "is-hidden"}`}>
+                {/* '$' is used only when code to be executed is added to string */}
+                <div className={`notification is-success logout-notification is-light ${showLogoutNotification ? "" : "is-hidden"}`}>
                     <button className="delete" onClick={this.removeLogOutNotification}></button>
                         You have been successfully logged out!
                 </div>

@@ -3,6 +3,7 @@ import Login from '../Login/Login';
 import Navbar from '../Navbar/Navbar';
 import Footer from '../Footer/Footer';
 import Mainpage from '../Mainpage/Mainpage';
+import Settings from '../Settings/Settings';
 import './App.css';
 
 class App extends React.Component {
@@ -16,11 +17,26 @@ class App extends React.Component {
           organisation: {
               name: "",
               token: ""
-          }
-      }
+          },
+          showSettings: false
+      };
 
       this.loginUser = this.loginUser.bind(this);
       this.logoutUser = this.logoutUser.bind(this);
+      this.navigateToHomepage = this.navigateToHomepage.bind(this);
+      this.navigateToSettings = this.navigateToSettings.bind(this);
+  }
+
+  navigateToSettings() {
+      this.setState ({
+          showSettings: true
+      })
+  }
+
+  navigateToHomepage() {
+      this.setState ({
+          showSettings: false
+      })
   }
 
   //Callback function => allows sending values from Child to Parent
@@ -31,7 +47,8 @@ class App extends React.Component {
           organisation: {
               name: organisation.name,
               token: organisation.token
-          }
+          },
+          showSettings: false
       });
   }
 
@@ -43,24 +60,31 @@ class App extends React.Component {
           organisation: {
               name: "",
               token: ""
-          }
+          },
+          showSettings: false
       });
   }
 
   render() {
-    const { isLoggedIn, isLoggedOut, organisation } = this.state;
+    const { isLoggedIn, isLoggedOut, organisation, showSettings } = this.state;
 
     /*Setting a prop connected to the callback*/
     var content = <Login userLoggedOut = {isLoggedOut} loginUser = {this.loginUser} />;
-    /*Conditional calling depending on isLoggedIn value*/
+    /* Conditional calling depending on isLoggedIn value */
     if(isLoggedIn) {
+      /* Conditional calling depending on showSettings value */
+      if(showSettings) {
+        content = <Settings userToken = {organisation.token}/>;
+      }else{
         content = <Mainpage />;
+      }
     }
 
     return (
       <div id="wrapper-parent">
         <div id="wrapper">
-            <Navbar logoutUser = {this.logoutUser} userIsLoggedIn = {isLoggedIn} orgName = {organisation.name} />
+            <Navbar logoutUser = {this.logoutUser} userIsLoggedIn = {isLoggedIn} orgName = {organisation.name} 
+                    navigateToHomepage = {this.navigateToHomepage}  navigateToSettings = {this.navigateToSettings} />
             {content}
         </div>
         <Footer />

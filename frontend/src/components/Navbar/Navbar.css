@@ -23,3 +23,7 @@
 #userName, #userName:hover {
     color: #3273dc;
 }
+
+.has-pointer-cursor {
+    cursor: pointer;
+}

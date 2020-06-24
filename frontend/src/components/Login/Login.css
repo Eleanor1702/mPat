@@ -20,7 +20,8 @@
     justify-content: center;
 }
 
-.margin-1rem {
+.logout-notification {
+    margin-bottom: -64px !important;
     margin: 1rem;
 }
 
