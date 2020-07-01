@@ -43,8 +43,10 @@ class Login extends React.Component {
 
 	requestLogin() {
 		const { registrationNr, password } = this.state;
-        
-		if(!this.isRegNrValid() || !this.isPassValid()) {
+		const regNrValid = this.isRegNrValid();
+		const passValid = this.isPassValid();
+
+		if(!regNrValid || !passValid) {
 			this.setState ({
 				processRequested: false
 			});
