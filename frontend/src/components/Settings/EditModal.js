@@ -1,51 +1,59 @@
 import React from "react";
-import axios from "axios";
 import PropTypes from "prop-types";
-import "./NewDepartmentModal.css";
+import "./EditModal.css";
+import axios from "axios";
 
-class NewDepartmentModal extends React.Component {
+class EditModal extends React.Component {
 	constructor(props) {
 		super(props);
+		const { depName, wipThreshold } = this.props;
 		this.state = {
+			processRequested: false,
+			depNameHasError: false,
+			wipHasError: false,
+			departmentName: depName,
+			wipThreshold: wipThreshold,
 			tooltipContent: 
 				"Once no new patient's deadline is lesser \n" +
 				"than this value, a WIP Patient (Work in \n" +
 				"Process Patient) will be taken next.",
-			processRequested: false,
-			depNameHasError: false,
-			departmentName: "",
-			wipHasError: false,
-			wipThreshold: ""
 		};
 
-		this.handleCreationClick = this.handleCreationClick.bind(this);
-		this.requestDepartmentCreation = this.requestDepartmentCreation.bind(this);
+		this.requestClosing = this.requestClosing.bind(this);
+		this.isWipThresholdValid = this.isWipThresholdValid.bind(this);
 		this.isDepartmentNameValid = this.isDepartmentNameValid.bind(this);
 		this.handleDepartmentNameChange = this.handleDepartmentNameChange.bind(this);
 		this.handleWipThresholdChange = this.handleWipThresholdChange.bind(this);
-		this.isWipThresholdValid = this.isWipThresholdValid.bind(this);
-		this.requestClosing = this.requestClosing.bind(this);
+		this.handleEditClick = this.handleEditClick.bind(this);
+		this.requestEdit = this.requestEdit.bind(this);
 	}
 
 	//The boolean 'departmentCreated' serves giving a hint wether the Modal is closed through 'cancel'
 	//or after creating a new department and a refresh is needed
 	//True => Department created, Refresh is needed
 	//False => Process was interrupted, no Refresh needed
-	requestClosing(departmentCreated) {
-		const { closeModalRequest } = this.props;
+	requestClosing(departmentEdited) {
+		const { modalClosingRequest, depName, wipThreshold } = this.props;
+		
+		//If No saving is required, then keep intial data in labels
+		if(!departmentEdited) {
+			this.setState ({
+				departmentName: depName,
+				wipThreshold: wipThreshold
+			});
+		}
 
 		this.setState ({
-			departmentName: "",
-			wipThreshold: "",
 			processRequested: false
-		}, 
-		() => closeModalRequest(departmentCreated));
+		},
+		() => modalClosingRequest("EditModal", departmentEdited));
 	}
 
 	//this function returns boolean values (true, false) which serves calling
 	//requestDepartmentCreation, which needs a validation before calling the backend
 	isWipThresholdValid() {
 		const { wipThreshold } = this.state;
+
 		//Return 'true' if variable doesnt contains a valid number
 		if( wipThreshold === "" || isNaN(wipThreshold) ){
 			this.setState ({
@@ -53,7 +61,7 @@ class NewDepartmentModal extends React.Component {
 			});
 			return false;
 		}else{
-			this.setState ({
+			this.setState({
 				wipHasError: false
 			});
 			return true;
@@ -62,6 +70,7 @@ class NewDepartmentModal extends React.Component {
 
 	handleWipThresholdChange(event) {
 		const { value } = event.target;
+
 		this.setState ({
 			wipThreshold: value
 		},
@@ -72,9 +81,10 @@ class NewDepartmentModal extends React.Component {
 	//requestDepartmentCreation, which needs a validation before calling the backend
 	isDepartmentNameValid() {
 		const { departmentName } = this.state;
-		if( departmentName === null || departmentName.trim() === "" ) {
+
+		if( departmentName === null || departmentName.trim() === "") {
 			this.setState ({
-				depNameHasError: true
+				departmentHasError: true
 			});
 			return false;
 		}else{
@@ -87,60 +97,48 @@ class NewDepartmentModal extends React.Component {
 
 	handleDepartmentNameChange(event) {
 		const { value } = event.target;
+
 		this.setState ({
 			departmentName: value
 		},
 		() => this.isDepartmentNameValid());
 	}
 
-	requestDepartmentCreation() {
+	requestEdit() {
+		const { depId, token } = this.props;
 		const { departmentName, wipThreshold } = this.state;
-		//Required for validating user accessibility to create a department
-		const { token } = this.props;
-		//Allow calling both validation functions beforehand, so validation effect occur
-		//for both inputs
-		const depNameValid = this.isDepartmentNameValid();
-		const wipThreshValid = this.isWipThresholdValid();
 
-		if(!depNameValid || !wipThreshValid) {
-			this.setState({
+		axios.put("http://localhost:5000/departments/" + depId, {
+			//Body Content
+			departmentName: departmentName,
+			wipThreshold: parseInt(wipThreshold)
+		}, {
+			//Headers 
+			headers: {
+				token: token
+			}
+		}).then(() => {
+			this.requestClosing(true);
+		}).catch(() => {
+			console.log("Error! Something went wrong while connecting to Server!");
+			this.setState ({
 				processRequested: false
 			});
-		}else{
-			axios.post("http://localhost:5000/departments", {
-				//Body Content
-				departmentName: departmentName,
-				wipThreshold: parseInt(wipThreshold),
-			}, {
-				//Headers
-				headers: {
-					token: token
-				}
-			}).then(() => {
-				this.requestClosing(true);
-			}).catch(() => {
-				console.log("Error! Something went wrong while connecting to Server!");
-				this.setState ({
-					depNameHasError: true,
-					wipHasError: true,
-					processRequested: false
-				});
-			});
-		}	
+		});
 	}
 
-	handleCreationClick() {
-		this.setState ({
+	handleEditClick() {
+		this.setState({
 			processRequested: true
 		},
-		() => this.requestDepartmentCreation());
+		() => this.requestEdit());
 	}
 
 	render() {
-		const { 
-			tooltipContent, processRequested,
-			depNameHasError, wipHasError, 
-			departmentName, wipThreshold 
+		const {
+			processRequested, depNameHasError,
+			wipHasError, departmentName,
+			wipThreshold, tooltipContent
 		} = this.state;
 		const { showModal } = this.props;
 
@@ -150,7 +148,7 @@ class NewDepartmentModal extends React.Component {
 				<div className="modal-content">
 					{/* Any other elements you want */}
 					<header className="modal-card-head">
-						<p className="modal-card-title">New Department</p>
+						<p className="modal-card-title">Edit Department</p>
 					</header>
 					<section className="modal-card-body">
 						<div className="field">
@@ -192,7 +190,7 @@ class NewDepartmentModal extends React.Component {
 						<div className="buttons is-right">
 							<button 
 								className={`button is-success ${processRequested ? "is-loading" : ""}`}
-								onClick={this.handleCreationClick}
+								onClick={this.handleEditClick}
 							>
 								Save changes
 							</button>
@@ -207,10 +205,13 @@ class NewDepartmentModal extends React.Component {
 	}
 }
 
-NewDepartmentModal.propTypes = {
+EditModal.propTypes = {
 	showModal: PropTypes.bool.isRequired,
-	closeModalRequest: PropTypes.func.isRequired,
-	token: PropTypes.string.isRequired
+	modalClosingRequest: PropTypes.func.isRequired,
+	token: PropTypes.string.isRequired,
+	depName: PropTypes.string.isRequired,
+	wipThreshold: PropTypes.number.isRequired,
+	depId: PropTypes.number.isRequired
 };
 
-export default NewDepartmentModal;
+export default EditModal;

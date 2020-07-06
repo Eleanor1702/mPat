@@ -24,7 +24,9 @@ class DeleteWarningModal extends React.Component {
 		this.setState ({
 			processRequested: false
 		}, 
-		() => modalClosingRequest(departmentDeleted));
+		() => {
+			modalClosingRequest("DeleteWarningModal", departmentDeleted);
+		});
 	}
 
 	requestDeletion() {
@@ -37,7 +39,7 @@ class DeleteWarningModal extends React.Component {
 			this.requestClosing(true);
 		}).catch(() => {
 			console.log("Error! Something went wrong while connecting to Server!");
-			this.setState({
+			this.setState ({
 				processRequested: false
 			});
 		});
