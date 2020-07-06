@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import "./Department.css";
-import DeleteWarningModal from "./DeleteWarningModal.js";
-import EditModal from "./EditModal.js";
+import DeleteWarningModal from "./Modal/DeleteWarningModal.js";
+import EditModal from "./Modal/EditModal.js";
 
 /* Represents Department object components, to be displayed in Settings */
 

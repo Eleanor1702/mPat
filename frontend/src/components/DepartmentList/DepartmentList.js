@@ -1,11 +1,11 @@
 import React from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
-import "./Settings.css";
+import "./DepartmentList.css";
 import Department from "./Department";
-import NewDepartmentModal from "./NewDepartmentModal";
+import NewDepartmentModal from "./Modal/NewDepartmentModal";
 
-class Settings extends React.Component {
+class DepartmentList extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -117,7 +117,7 @@ class Settings extends React.Component {
 	}
 }
 
-Settings.propTypes = {
+DepartmentList.propTypes = {
 	userToken: PropTypes.string.isRequired
 };
-export default Settings;
+export default DepartmentList;
