@@ -43,8 +43,8 @@ class DepartmentList extends React.Component {
 	}
 	
 	getDepartments() {
-		//To get all Department, a token verification is necessary. While this is a 'get' request
-		//axios allow headers to pass data from Frontend to backend
+		//To get all Department, a token verification is necessary.
+		//axios allow data transfer from Frontend to backend through headers
 		axios.get(
 			"http://localhost:5000/departments", {
 				headers: {
@@ -55,8 +55,8 @@ class DepartmentList extends React.Component {
 			this.setState ({
 				departments: departments.data
 			});
-		}).catch((reason) => {
-			console.log(reason);
+		}).catch((exception) => {
+			console.log(exception);
 		});
 	}
 

@@ -3,7 +3,7 @@ import Login from "../Login/Login";
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
 import Mainpage from "../Mainpage/Mainpage";
-import Settings from "../Settings/Settings";
+import Settings from "../DepartmentList/DepartmentList";
 import "./App.css";
 
 class App extends React.Component {
@@ -74,9 +74,9 @@ class App extends React.Component {
 		if(isLoggedIn) {
 			/* Conditional calling depending on showSettings value */
 			if(showSettings) {
-				content = <Settings userToken = {organisation.token}/>;
+				content = <Settings userToken = {organisation.token} />;
 			}else{
-				content = <Mainpage />;
+				content = <Mainpage userToken = {organisation.token} />;
 			}
 		}
 

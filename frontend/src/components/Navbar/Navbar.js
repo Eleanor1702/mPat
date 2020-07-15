@@ -3,14 +3,13 @@ import "./Navbar.css";
 import PropTypes from "prop-types";
 
 class Navbar extends React.Component {
-	constructor(props) { 
-		super(props);
-	}
 
 	render() {
 		return (
 			<nav className="navbar is-light" role="navigation" aria-label="main navigation">
 				<div className="navbar-brand has-pointer-cursor">
+					{/* ignores specific failures by eslint */}
+					{/* eslint-disable-next-line */}
 					<a className="navbar-item" onClick={this.props.navigateToHomepage}>
 						<img src="img/waiting-room.png" alt="mPat: Patient waiting time system" width="32"/>
 						<label className="navbar-brand-label has-pointer-cursor">mPat Backoffice</label>
@@ -24,9 +23,12 @@ class Navbar extends React.Component {
 							</button>
 						</div>
 						<div className="navbar-dropdown is-right">
+							{/* eslint-disable-next-line */}
 							<a id="userName" className="navbar-item is-transparent has-default-cursor">{this.props.orgName}</a>
 							<hr className="navbar-divider"/>
+							{/* eslint-disable-next-line */}
 							<a className="navbar-item" onClick={this.props.navigateToSettings}>Settings</a>
+							{/* eslint-disable-next-line */}
 							<a className="navbar-item" onClick={this.props.logoutUser}>Log Out</a>
 						</div>
 					</div>
