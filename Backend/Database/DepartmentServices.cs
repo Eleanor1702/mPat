@@ -15,9 +15,11 @@ namespace Backend {
             Db.Connection.Open();
             var cmd = Db.Connection.CreateCommand();
 
-            cmd.CommandText = @"SELECT Id, Name, WIPThreshold, CreatedAt, UpdatedAt
-                                FROM Department
-                                WHERE OrganisationId = @orgId";
+            cmd.CommandText = @"
+											SELECT Id, Name, WIPThreshold, CreatedAt, UpdatedAt
+                                	FROM Department
+                                	WHERE OrganisationId = @orgId
+										";
 
             cmd.Parameters.Add(new MySqlParameter {
                 ParameterName = "@orgId",
@@ -42,30 +44,30 @@ namespace Backend {
             return departments;
         }
 
-        public void createNewDepartment(long organisationId, string departmentName, int wipThreshold) {
-            InitiateConnectionAndExecuteQuery((cmd) => {
-                cmd.CommandText = @"INSERT INTO Department (OrganisationId, Name, WipThreshold)
-                                    VALUES (@orgId, @name, @wip)";
-                
-                cmd.Parameters.Add(new MySqlParameter {
-                    ParameterName = "@orgId",
-                    DbType = DbType.StringFixedLength,
-                    Value = organisationId,
-                });
+		public void createNewDepartment(long organisationId, string departmentName, int wipThreshold) {
+			InitiateConnectionAndExecuteQuery((cmd) => {
+					cmd.CommandText = @"INSERT INTO Department (OrganisationId, Name, WipThreshold)
+											VALUES (@orgId, @name, @wip)";
+					
+					cmd.Parameters.Add(new MySqlParameter {
+						ParameterName = "@orgId",
+						DbType = DbType.StringFixedLength,
+						Value = organisationId,
+					});
 
-                cmd.Parameters.Add(new MySqlParameter {
-                    ParameterName = "@name",
-                    DbType = DbType.StringFixedLength,
-                    Value = departmentName,
-                });
+					cmd.Parameters.Add(new MySqlParameter {
+						ParameterName = "@name",
+						DbType = DbType.StringFixedLength,
+						Value = departmentName,
+					});
 
-                cmd.Parameters.Add(new MySqlParameter {
-                    ParameterName = "@wip",
-                    DbType = DbType.StringFixedLength,
-                    Value = wipThreshold,
-                });
-            });
-        }
+					cmd.Parameters.Add(new MySqlParameter {
+						ParameterName = "@wip",
+						DbType = DbType.StringFixedLength,
+						Value = wipThreshold,
+					});
+			});
+		}
 
         public void updateDepartment(long orgId, long id, string depName, int wipThreshold) {
             InitiateConnectionAndExecuteQuery((cmd) => {

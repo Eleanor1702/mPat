@@ -5,6 +5,8 @@ using Backend.Models.Requests;
 
 namespace Backend.Controllers {
 
+	[ApiController]
+	//Set the route to be able to access the controller
     [Route("departments")]
     public class DepartmentsController : ControllerBase {
         private AppDb Db { get; }

@@ -1,8 +1,33 @@
+using System;
+using System.Text.Json.Serialization;
+
 namespace Backend {
-    public class Patient {
-        public int id { get; set; }
-        public string firstName { get; set; }
-        public string lastName { get; set; }
-        public int age { get; set; }
-    }
+	public class Patient {
+
+		[JsonIgnore]
+		public long departmentId { get; }
+		public long id { get; }
+		public string firstName { get; }
+		public string lastName { get; }
+		public string details { get; }
+		public bool isWIP { get; }
+		public string priority { get; }
+		public DateTime createdAt { get; }
+		public DateTime updatedAt { get; }
+
+		public Patient (
+			long depId, long newId, string newFirstName, string newLastName, string newDetails, 
+			bool isWIPValue, string newPriority, DateTime createTime, DateTime updateTime
+		) {
+			departmentId = depId;
+			id = newId;
+			firstName = newFirstName;
+			lastName = newLastName;
+			details = newDetails;
+			isWIP = isWIPValue;
+			priority = newPriority;
+			createdAt = createTime;
+			updatedAt = updateTime;
+		}
+	}
 }
