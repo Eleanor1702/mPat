@@ -8,7 +8,7 @@ namespace Backend.Controllers {
 
     [ApiController]
     //Set the route where this controller is accessible
-    [Route("departments/{depId}/patients")]
+    [Route("departments/{urlDepId}/patients")]
     public class PatientsController : ControllerBase {
 		private AppDb Db { get; }
 		private OrganisationServices orgService { get; }
@@ -22,7 +22,7 @@ namespace Backend.Controllers {
 			patService = new PatientServices(Db);
 		}
 
-		private IActionResult ValidateTokenAndExecute(long depId, Func<Department, IActionResult> action) {
+		private IActionResult ValidateTokenAndExecute(long urlDepId, Func<long, IActionResult> action) {
 			try{
 				//Get Organisation token from header
 				var token = Request.Headers["token"];
@@ -32,9 +32,9 @@ namespace Backend.Controllers {
 				//Proceed only when a valid organisation is available
 				if(org != null) {
 					//Find requested Department
-					var dep = depService.findAllDepartments(org).Where(a => a.id == depId).First();
+					var dep = depService.findAllDepartments(org).Where(a => a.id == urlDepId).First();
 
-					return action(dep);
+					return action(dep.id);
 				}
 
 			//Catch Exceptions occured while selecting a department Id in action
@@ -57,36 +57,40 @@ namespace Backend.Controllers {
 		}
 
 		[HttpGet]
-		public IActionResult GetAllPatientsPerDepartment(long depId) {
-			return ValidateTokenAndExecute(depId, (dep) => {
+		public IActionResult GetAllPatientsPerDepartment(long urlDepId) {
+			return ValidateTokenAndExecute(urlDepId, (depId) => {
 				//Look up database for all patients linked to this department
-				return Ok(patService.findAllPatientsPerDepartment(dep));
+				return Ok(patService.findAllPatientsPerDepartment(depId));
 			});
 		}
 
 		[HttpPost]
-		public IActionResult CreatePatient(long depId, [FromBody] NewPatientRequest request) {
-			return ValidateTokenAndExecute(depId, (dep) => {
-				patService.createNewPatient(
-					dep.id, request.firstName, request.lastName, request.details, request.isWIP, request.priority
+		public IActionResult CreatePatient(long urlDepId, [FromBody] NewPatientRequest request) {
+			return ValidateTokenAndExecute(urlDepId, (depId) => {
+				var patId = patService.createNewPatient(
+					depId, request.firstName, request.lastName, request.details, request.isWIP, request.priority
 				);
+				//Allow client to access the header 'patId' only for this action
+				Response.Headers.Add("Access-Control-Expose-Headers", "patId");
+				//return patient id in header
+				Response.Headers.Add("patId", patId.ToString());
 				return StatusCode(201);
 			});
 		}
 
 		[HttpDelete("{patId}")]
-		public IActionResult DeletePatient(long depId, long patId) {
-			return ValidateTokenAndExecute(depId, (dep) => {
-				patService.deletePatient(dep.id, patId);
+		public IActionResult DeletePatient(long urlDepId, long patId) {
+			return ValidateTokenAndExecute(urlDepId, (depId) => {
+				patService.deletePatient(depId, patId);
 				return NoContent();
 			});
 		}
 
 		[HttpPut("{patId}")]
-		public IActionResult UpdatePatient(long depId, long patId, [FromBody] NewPatientRequest request) {
-			return ValidateTokenAndExecute(depId, (dep) => {
+		public IActionResult UpdatePatient(long urlDepId, long patId, [FromBody] NewPatientRequest request) {
+			return ValidateTokenAndExecute(urlDepId, (depId) => {
 				patService.updatePatient(
-					dep.id, patId, request.firstName, request.lastName, request.details, request.isWIP, request.priority
+					depId, patId, request.firstName, request.lastName, request.details, request.isWIP, request.priority
 				);
 				return NoContent();
 			});

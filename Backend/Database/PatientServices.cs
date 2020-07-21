@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using MySql.Data.MySqlClient;
 
 namespace Backend {
@@ -11,7 +12,7 @@ namespace Backend {
 			Db = newDb;
 		}
 
-		public List<Patient> findAllPatientsPerDepartment(Department dep) {
+		public List<Patient> findAllPatientsPerDepartment(long depId) {
 			Db.Connection.Open();
 			var cmd = Db.Connection.CreateCommand();
 
@@ -24,7 +25,7 @@ namespace Backend {
 			cmd.Parameters.Add(new MySqlParameter {
 				ParameterName = "@depId",
 				DbType = DbType.StringFixedLength,
-				Value = dep.id,
+				Value = depId,
 			});
 
 			var reader = cmd.ExecuteReader();
@@ -42,7 +43,7 @@ namespace Backend {
 
 				patients.Add(
 					new Patient(
-						dep.id, id, fristName, lastName, details,
+						depId, id, fristName, lastName, details,
 						isWIPValue, priority, createdAt, updatedAt
 					)
 				);
@@ -66,7 +67,7 @@ namespace Backend {
 			}
 		}
 
-		public void createNewPatient(
+		public long createNewPatient(
 			long departmentId, string firstName, string lastName, string details, bool isWIP, string priority
 		) {
 			InitiateConnectionAndExecuteQuery((cmd) => {
@@ -94,6 +95,16 @@ namespace Backend {
 					cmd.Parameters.Add(parameter);	 
 				}
 			});
+
+			var patientsPerDepartment = findAllPatientsPerDepartment(departmentId);
+			return patientsPerDepartment.Where(
+				a => 
+					a.firstName == firstName && 
+					a.lastName == lastName &&
+					a.details == details &&
+					a.isWIP == isWIP &&
+					a.priority == priority
+			).Last().id;
 		}
 
 		public void deletePatient(long departmentId, long id) {
