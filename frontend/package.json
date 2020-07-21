@@ -9,8 +9,10 @@
     "axios": "^0.19.2",
     "moment": "^2.27.0",
     "prop-types": "^15.7.2",
+    "qrcode.react": "^1.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-new-window": "^0.1.2",
     "react-scripts": "3.4.1"
   },
   "scripts": {

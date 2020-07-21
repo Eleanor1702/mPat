@@ -25,7 +25,6 @@ class DepartmentList extends React.Component {
 	}
 
 	showNewDepartmentModal() {
-		console.log("clicked");
 		this.setState ({
 			showModal: true
 		});
@@ -34,8 +33,7 @@ class DepartmentList extends React.Component {
 	closeModalRequest(departmentCreated) {
 		this.setState({
 			showModal: false
-		},
-		() => {
+		}, () => {
 			if(departmentCreated) {
 				this.getDepartments();
 			}
@@ -85,7 +83,11 @@ class DepartmentList extends React.Component {
 								<span>New Department</span>
 							</button>
 						</div>
-						<NewDepartmentModal showModal = {showModal} closeModalRequest = {this.closeModalRequest} token = {userToken} />
+						<NewDepartmentModal 
+							showModal = {showModal} 
+							closeModalRequest = {this.closeModalRequest} 
+							token = {userToken} 
+						/>
 						<table className="table is-bordered is-striped is-hoverable is-fullwidth">
 							<thead>
 								<tr>

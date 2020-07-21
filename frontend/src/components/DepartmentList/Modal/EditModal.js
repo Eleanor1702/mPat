@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import "./EditModal.css";
 import axios from "axios";
+import "./EditModal.css";
 
 class EditModal extends React.Component {
 	constructor(props) {

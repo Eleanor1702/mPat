@@ -6,11 +6,11 @@ import PropTypes from "prop-types";
 class PriorityTable extends React.Component {
 
 	render() {
-		const { patients, userToken, deadline, priority, color } = this.props;
+		const { patients, userToken, deadline, priority, color, depId } = this.props;
 
 		return (
 			<article className={"panel is-" + color}>
-				<p className="panel-heading level">
+				<div className="panel-heading level">
 					<div className="level-right">
 						<div className="level-item">	
 							{priority} [Max. {deadline} Minutes]
@@ -21,7 +21,7 @@ class PriorityTable extends React.Component {
 								Total of Patients: {patients.length}
 						</div>
 					</div>
-				</p>
+				</div>
 				<div className="panel-block">
 					<table className="table is-hoverable is-fullwidth">
 						<thead>
@@ -37,9 +37,12 @@ class PriorityTable extends React.Component {
 							{patients.map((patient) =>
 								<Patient
 									key = {patient.id}
+									depId = {depId}
 									patient = {patient}
 									userToken = {userToken}
 									deadline = {deadline}
+									nextPatient = {this.props.nextPatient}
+									refreshPatsInMainpage = {this.props.refreshPatsInMainpage}
 								/>
 							)}
 						</tbody>
@@ -55,7 +58,10 @@ PriorityTable.propTypes = {
 	userToken: PropTypes.string.isRequired,
 	deadline: PropTypes.number.isRequired,
 	priority: PropTypes.string.isRequired,
-	color: PropTypes.string.isRequired
+	color: PropTypes.string.isRequired,
+	nextPatient: PropTypes.func.isRequired,
+	depId: PropTypes.number.isRequired,
+	refreshPatsInMainpage: PropTypes.func.isRequired
 };
 
 export default PriorityTable;

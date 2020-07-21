@@ -180,8 +180,7 @@ class Login extends React.Component {
 									onClick={this.handleLoginClick}>
                                     Login
 								</button>
-							</div>
-                            
+							</div> 
 						</div>
 					</div>
 				</div> 

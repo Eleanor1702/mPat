@@ -14,11 +14,9 @@ class Department extends React.Component {
 			showEditModal: false
 		};
 
-		this.showDeleteWarningModal = this.showDeleteWarningModal.bind(this);
-		this.closeDeleteWarningModal = this.closeDeleteWarningModal.bind(this);
-		this.closeModal = this.closeModal.bind(this);
 		this.showEditModal = this.showEditModal.bind(this);
-		this.closeEditModal = this.closeEditModal.bind(this);
+		this.showDeleteWarningModal = this.showDeleteWarningModal.bind(this);
+		this.closeModal = this.closeModal.bind(this);
 	}
 
 	showDeleteWarningModal() {
@@ -27,40 +25,26 @@ class Department extends React.Component {
 		});
 	}
 
-	closeDeleteWarningModal(departmentDeleted) {
-		const { refreshDepsInSettings } = this.props;
-
-		if(departmentDeleted) {
-			refreshDepsInSettings();
-		}
-	}
-
 	showEditModal() {
 		this.setState ({
 			showEditModal: true
 		});
 	}
 
-	closeEditModal(departmentEdited) {
-		const { refreshDepsInSettings } = this.props;
-
-		if(departmentEdited) {
-			refreshDepsInSettings();
-		}
-	}
-
 	closeModal(modalType, changeOccured) {
 		if(modalType === "DeleteWarningModal") {
 			this.setState ({
 				showDeleteWarning: false
-			},
-			() => this.closeDeleteWarningModal(changeOccured));
-
+			});
 		}else if(modalType === "EditModal") {
 			this.setState ({
 				showEditModal: false
-			},
-			() => this.closeEditModal(changeOccured));
+			});
+		}
+
+		const { refreshDepsInSettings } = this.props;
+		if(changeOccured) {
+			refreshDepsInSettings();
 		}
 	}
 
