@@ -5,18 +5,23 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import NewPatientModal from "./Modal/NewPatientModal";
 import QRcodeModal from "./Modal/QRcodeModal";
+import WIPTable from "./WIPTable";
+import getNextEligiblePatient from "../../algorithm/NextPatientAlgorithm";
 
 class Mainpage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			interval: null,
 			departments: [],
 			depId: 0,
+			currDepartment: null,
 			patients: [],
 			showModal: false,
 			showQRcodeModal: false,
 			lastCreatedPatId: "",
-			nextPatient: "" 
+			nextPatient: null,
+			intialPatientRequest: false
 		};
 
 		this.getDepartments = this.getDepartments.bind(this);
@@ -26,17 +31,67 @@ class Mainpage extends React.Component {
 		this.closeModalRequest = this.closeModalRequest.bind(this);
 		this.setLastCreatedPatId = this.setLastCreatedPatId.bind(this);
 		this.closeQRcodeModalRequest = this.closeQRcodeModalRequest.bind(this);
-		this.setNextPatient = this.setNextPatient.bind(this);
+		this.getNextPatient = this.getNextPatient.bind(this);
+		this.callNextPatient = this.callNextPatient.bind(this);
+		this.handleNextPatientCallRequest = this.handleNextPatientCallRequest.bind(this);
 	}
 
-	setNextPatient(patient) {
-		this.setState ({
-			nextPatient: patient
+	getNextPatient() {
+		const { patients, currDepartment } = this.state;
+		const eligiblePat = getNextEligiblePatient(patients, currDepartment.wipThreshold);
+
+		if(eligiblePat != undefined) {
+			this.setState ({
+				nextPatient: eligiblePat
+			});
+		}else {
+			this.setState ({
+				nextPatient: null
+			});
+		}
+	}
+
+	handleNextPatientCallRequest() {
+		const { nextPatient } = this.state;
+
+		if(nextPatient != null) {
+			this.callNextPatient(nextPatient);
+		}
+	}
+
+	callNextPatient(patient) {
+		//Send signal to App
+		console.log(patient.firstName + " " + patient.lastName + " is called!");
+		//Delete patient from database
+		const { depId } = this.state;
+		const { userToken } = this.props;
+		axios.delete("http://localhost:5000/departments/" + depId + "/patients/" + patient.id, {
+			headers: {
+				token: userToken
+			}
+		}).then(() => {
+			this.getDepartmentPatients();
+
+		}).catch(() => {
+			console.log("Error! Something went wrong while connecting to Server!");
 		});
 	}
 
 	componentDidMount(){
 		this.getDepartments();
+		
+		this.setState ({
+			interval: setInterval(() => {
+				const { intialPatientRequest } = this.state; 
+				if(intialPatientRequest) {
+					this.getNextPatient();
+				}
+			}, 1000)
+		});
+	}
+
+	componentWillUnmount() {
+		clearInterval(this.state.interval);
 	}
 
 	getDepartments() {
@@ -52,7 +107,8 @@ class Mainpage extends React.Component {
 		).then((departments) => {
 			this.setState ({
 				departments: departments.data,
-				depId: departments.data[0].id
+				depId: departments.data[0].id,
+				currDepartment: departments.data.filter(a => a.id == departments.data[0].id)[0]
 
 			}, () => {
 				this.getDepartmentPatients();
@@ -119,7 +175,8 @@ class Mainpage extends React.Component {
 
 		).then((patients) => {
 			this.setState ({
-				patients: patients.data
+				patients: patients.data,
+				intialPatientRequest: true
 			});
 
 		}).catch((exception) => {
@@ -136,11 +193,16 @@ class Mainpage extends React.Component {
 				{/* Next Patient Button */}
 				<div className="columns is-mobile">
 					<div className="column is-one-third is-offset-one-third">
-						<button className="button is-info is-size-5 has-icons-left has-text-weight-medium is-fullwidth pt-4 pb-6">
+						<button 
+							className="button is-success is-size-5 has-icons-left has-text-weight-medium is-fullwidth pt-4 pb-6"
+							onClick={this.handleNextPatientCallRequest}
+							disabled={nextPatient === null}
+						>
 							<span className="icon mr-2">
-								<i className="fas fa-user-alt"></i>
+								<i className="fas fa-bullhorn"></i>
 							</span>
-							Next Patient: {nextPatient}
+							Call Next Patient:
+							{nextPatient != null ? " " + nextPatient.firstName + " " + nextPatient.lastName : " No Patient Available"} 
 						</button>
 					</div>
 				</div>
@@ -217,7 +279,7 @@ class Mainpage extends React.Component {
 					patients = {patients.filter(a => a.priority === "Emergent")}
 					userToken = {userToken}
 					deadline = {15}
-					nextPatient = {this.setNextPatient}
+					nextPatient = {this.callNextPatient}
 					refreshPatsInMainpage = {this.getDepartmentPatients}
 				/>
 
@@ -229,7 +291,7 @@ class Mainpage extends React.Component {
 					patients = {patients.filter(a => a.priority === "Urgent")}
 					userToken = {userToken}
 					deadline = {30}
-					nextPatient = {this.setNextPatient}
+					nextPatient = {this.callNextPatient}
 					refreshPatsInMainpage = {this.getDepartmentPatients}
 				/>
 
@@ -241,7 +303,7 @@ class Mainpage extends React.Component {
 					patients = {patients.filter(a => a.priority === "Less Urgent")}
 					userToken = {userToken}
 					deadline = {60}
-					nextPatient = {this.setNextPatient}
+					nextPatient = {this.callNextPatient}
 					refreshPatsInMainpage = {this.getDepartmentPatients}
 				/>
 
@@ -253,7 +315,18 @@ class Mainpage extends React.Component {
 					patients = {patients.filter(a => a.priority === "Non Urgent")}
 					userToken = {userToken}
 					deadline = {120}
-					nextPatient = {this.setNextPatient}
+					nextPatient = {this.callNextPatient}
+					refreshPatsInMainpage = {this.getDepartmentPatients}
+				/>
+
+				{/* WIP Panel Patients */}
+				<WIPTable
+					type = {"Work In Progress Patients"}
+					color = {"dark"}
+					depId = {depId}
+					patients = {patients.filter(a => a.isWIP === true)}
+					userToken = {userToken}
+					nextPatient = {this.callNextPatient}
 					refreshPatsInMainpage = {this.getDepartmentPatients}
 				/>
 			</div>

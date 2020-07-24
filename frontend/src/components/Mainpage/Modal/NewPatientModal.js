@@ -242,7 +242,7 @@ class NewPatientModal extends React.Component {
 							</div>
 						</div>
 
-						<div className="field">
+						<div className={`field ${isWIP === "true" ? "is-hidden" : ""}`}>
 							<label className="label">
 								Patient Priority
 								<span className="has-no-border-bottom" data-tooltip={NewPatientModal.priorityTooltip}>

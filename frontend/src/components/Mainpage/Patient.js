@@ -9,7 +9,7 @@ class Patient extends React.Component {
 		super(props);
 		this.state = {
 			interval: null,
-			deadlineInSeconds: this.props.deadline * 60,
+			deadlineInSeconds: (this.props.deadline > 0 ? this.props.deadline : 0) * 60,
 			minutes: 0,
 			seconds: 0,
 			progressBarValue: 0,
@@ -69,8 +69,8 @@ class Patient extends React.Component {
 	}
 
 	callPatient() {
-		const { patient: { firstName, lastName }, nextPatient } = this.props;
-		nextPatient(firstName + " " + lastName);
+		const { patient, nextPatient } = this.props;
+		nextPatient(patient);
 	}
 
 	calculateRemainingTime() {
@@ -117,7 +117,7 @@ class Patient extends React.Component {
 			patient: {
 				id, firstName, lastName, details, priority, isWIP
 			},
-			userToken, depId
+			userToken, depId, isWIPTable
 		} = this.props;
 
 		return(
@@ -125,7 +125,7 @@ class Patient extends React.Component {
 				<td className="has-text-centered">{firstName}</td>
 				<td className="has-text-centered">{lastName}</td>
 				<td className="has-text-centered">{details}</td>
-				<td className="has-text-centered">
+				<td className={`has-text-centered ${isWIPTable ? "is-hidden" : ""}`}>
 					<div className="progress-wrapper">
 						{/* The progress bar receives its value from the fuction 'getRemainingTime'. The value is neeeded that is 
 						why the function '()' are also needed */}
@@ -165,29 +165,30 @@ class Patient extends React.Component {
 							</span>
 						</button>
 					</div>
+					<div className="has-text-left">
+						<EditModal
+							showModal = {showEditModal}
+							modalClosingRequest = {this.closeModal}
+							userToken = {userToken}
+							depId = {depId}
+							patId = {id}
+							firstName = {firstName}
+							lastName = {lastName}
+							details = {details}
+							priority = {priority}
+							isWIP = {isWIP}
+						/>
+
+						<DeleteWarningModal 
+							showModal = {showDeleteWarning} 
+							patName = {firstName + " " + lastName}
+							depId = {depId}
+							patId = {id}
+							token = {userToken}
+							modalClosingRequest = {this.closeModal}
+						/>
+					</div>
 				</td>
-
-				<EditModal
-					showModal = {showEditModal}
-					modalClosingRequest = {this.closeModal}
-					userToken = {userToken}
-					depId = {depId}
-					patId = {id}
-					firstName = {firstName}
-					lastName = {lastName}
-					details = {details}
-					priority = {priority}
-					isWIP = {isWIP}
-				/>
-
-				<DeleteWarningModal 
-					showModal = {showDeleteWarning} 
-					patName = {firstName + " " + lastName}
-					depId = {depId}
-					patId = {id}
-					token = {userToken}
-					modalClosingRequest = {this.closeModal}
-				/>
 			</tr>
 		);
 	}
@@ -195,10 +196,11 @@ class Patient extends React.Component {
 
 Patient.propTypes = {
 	patient: PropTypes.object.isRequired,
-	deadline: PropTypes.number.isRequired,
+	deadline: PropTypes.number,
 	nextPatient: PropTypes.func.isRequired,
 	userToken: PropTypes.string.isRequired,
 	depId: PropTypes.number.isRequired,
+	isWIPTable: PropTypes.bool.isRequired,
 	refreshPatsInMainpage: PropTypes.func.isRequired
 };
 
