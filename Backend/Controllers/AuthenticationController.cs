@@ -1,3 +1,4 @@
+using System;
 using Backend.Models.Requests;
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
@@ -17,7 +18,7 @@ namespace Backend.Controllers {
         [HttpPost]
         public IActionResult LogIn([FromBody] LoginRequest request) {
             OrganisationServices orgService = new OrganisationServices(Db);
-
+				
             try {
                 var org = orgService.FindByRegNrAndPassKey(request.registrationNr, request.passKey);
                 if(org != null) {
