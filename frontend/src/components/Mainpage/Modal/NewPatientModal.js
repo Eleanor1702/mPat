@@ -39,8 +39,8 @@ class NewPatientModal extends React.Component {
 			firstName: "",
 			lastName: "",
 			details: "",
-			isWIP: false,
-			priority: "",
+			isWIP: "false",
+			priority: "Emergent",
 			processRequested: false,
 			firstNameHasError: false,
 			lastNameHasError: false
@@ -122,7 +122,7 @@ class NewPatientModal extends React.Component {
 				lastName: lastName,
 				details: details,
 				isWIP: isWIP === "true",
-				priority: priority
+				priority: isWIP === "true" ? "" : priority
 
 			}, {
 				//Headers
