@@ -20,6 +20,9 @@ class PatientInfoScreen extends Component {
 		this.calculateWaitingTime = this.calculateWaitingTime.bind(this);
 		this.updateData = this.updateData.bind(this);
 		this.endSession = this.endSession.bind(this);
+		this.renderNotCalled = this.renderNotCalled.bind(this);
+		this.renderIsWIP = this.renderIsWIP.bind(this);
+		this.renderIsCalled = this.renderIsCalled.bind(this);
 	}
 
 	componentDidMount(){
@@ -107,6 +110,27 @@ class PatientInfoScreen extends Component {
 		);
 	}
 
+	renderIsWIP() {
+		return (
+			<View style = {styles.container}>
+				<Text style = {styles.topText}>Please have some patience</Text>
+				<View style = {styles.roundView}>
+					<Text style = {styles.messageIfCalled}>Please wait until you are called</Text>
+				</View>
+				<View style = {styles.buttonContainer}>
+					<FontAwesomeIcon
+						style = {styles.icon}
+						size = { 30 }
+						icon = { faUserInjured }
+					/>
+					<Text style = {styles.registerText}>
+						Ahead of you:  {this.state.patInfo.patPosition} patients
+					</Text>
+				</View>
+			</View>
+		);
+	}
+
 	renderIsCalled() {
 		return (
 			<View style = {styles.container}>
@@ -132,9 +156,11 @@ class PatientInfoScreen extends Component {
 
 	render() {
 		const { patInfo } = this.state;
-		
+
 		if(patInfo.isCalled) {
 			return this.renderIsCalled();
+		}else if(patInfo.isWIP) {
+			return this.renderIsWIP();
 		}
 
 		return this.renderNotCalled();
@@ -224,7 +250,7 @@ const styles = StyleSheet.create({
 	},
 
 	touchableOpacityContainer: {
-		marginTop: 80
+		marginTop: 110
 	},
 
 	buttonContainerIfCalled: {
