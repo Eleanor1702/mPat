@@ -43,6 +43,40 @@ namespace Backend {
             Db.Connection.Close();
             return departments;
         }
+		
+		public Department findDepartmentById(long depId) {
+			Db.Connection.Open();
+            var cmd = Db.Connection.CreateCommand();
+
+            cmd.CommandText = @"
+											SELECT Id, OrganisationId, Name, WIPThreshold, CreatedAt, UpdatedAt
+                                	FROM Department
+                                	WHERE Id = @depId
+										";
+
+            cmd.Parameters.Add(new MySqlParameter {
+                ParameterName = "@depId",
+                DbType = DbType.StringFixedLength,
+                Value = depId,
+            });
+
+            var reader = cmd.ExecuteReader();
+            Department dep = null;
+
+            while(reader.Read()) {
+					var id = reader.GetInt64(0);
+                var organisationId = reader.GetInt64(1);
+                var name = reader.GetString(2);
+                var wipThreshold = reader.GetUInt16(3);
+                var createdAt = reader.GetDateTime(4).ToString();
+                var updatedAt = reader.GetDateTime(5).ToString();
+                
+                dep = new Department(organisationId, id, name, wipThreshold, createdAt, updatedAt);
+            }
+
+            Db.Connection.Close();
+            return dep;
+		}
 
 		public void createNewDepartment(long organisationId, string departmentName, int wipThreshold) {
 			InitiateConnectionAndExecuteQuery((cmd) => {
