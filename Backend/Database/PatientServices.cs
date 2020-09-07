@@ -17,9 +17,10 @@ namespace Backend {
 			var cmd = Db.Connection.CreateCommand();
 
 			cmd.CommandText = @"
-										SELECT Id, FirstName, LastName, Details, IsWIP, Priority, CreatedAt, UpdatedAt
+										SELECT Id, FirstName, LastName, Details, IsWIP, Priority, CreatedAt, UpdatedAt, IsCalled
 										FROM Patient
 										WHERE DepartmentId = @depId
+										AND IsCalled = false
 									";
 
 			cmd.Parameters.Add(new MySqlParameter {
@@ -40,17 +41,59 @@ namespace Backend {
 				var priority = reader.GetString(5);
 				var createdAt = reader.GetDateTime(6);
 				var updatedAt = reader.GetDateTime(7);
+				var isCalled = reader.GetBoolean(8);
 
 				patients.Add(
 					new Patient(
-						depId, id, fristName, lastName, details,
-						isWIPValue, priority, createdAt, updatedAt
+						depId, id, fristName, lastName, details, isWIPValue, 
+						priority, createdAt, updatedAt, isCalled
 					)
 				);
 			}
 
 			Db.Connection.Close();
 			return patients;
+		}
+
+		public Patient findPatientById(long patId) {
+			Db.Connection.Open();
+			var cmd = Db.Connection.CreateCommand();
+
+			cmd.CommandText = @"
+										SELECT Id, DepartmentId, FirstName, LastName, Details, IsWIP, Priority, CreatedAt, UpdatedAt, IsCalled
+										FROM Patient
+										WHERE Id = @patId
+									";
+			
+			cmd.Parameters.Add(new MySqlParameter {
+				ParameterName = "@patId",
+				DbType = DbType.StringFixedLength,
+				Value = patId,
+			});
+
+			var reader = cmd.ExecuteReader();
+			Patient pat = null;
+
+			while(reader.Read()) {
+				var id = reader.GetInt64(0);
+				var departmentId = reader.GetInt64(1);
+				var fristName = reader.GetString(2);
+				var lastName = reader.GetString(3);
+				var details = reader.GetString(4);
+				var isWIPValue = reader.GetBoolean(5);
+				var priority = reader.GetString(6);
+				var createdAt = reader.GetDateTime(7);
+				var updatedAt = reader.GetDateTime(8);
+				var isCalled = reader.GetBoolean(9);
+
+				pat = new Patient(
+					departmentId, id, fristName, lastName, details,
+					isWIPValue, priority, createdAt, updatedAt, isCalled
+				);
+			}
+
+			Db.Connection.Close();
+			return pat;
 		}
 
 		private void InitiateConnectionAndExecuteQuery(Action<MySqlCommand> action) {
@@ -150,6 +193,27 @@ namespace Backend {
 					new MySqlParameter("@priority", priority),
 					new MySqlParameter("@id", id),
 					new MySqlParameter("@depId", departmentId)
+				};
+
+				foreach(var parameter in parameters) {
+					cmd.Parameters.Add(parameter);
+				}
+			});
+		}
+
+		public void callPatient(long depId, long id) {
+			InitiateConnectionAndExecuteQuery((cmd) => {
+				cmd.CommandText = @"
+					UPDATE Patient
+					SET
+						IsCalled = true
+					WHERE Id = @id
+					AND DepartmentId = @depId
+				";
+
+				MySqlParameter[] parameters = {
+					new MySqlParameter("@id", id),
+					new MySqlParameter("@depId", depId)
 				};
 
 				foreach(var parameter in parameters) {
