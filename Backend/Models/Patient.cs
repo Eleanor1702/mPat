@@ -15,9 +15,12 @@ namespace Backend {
 		public DateTime createdAt { get; }
 		public DateTime updatedAt { get; }
 
+		public bool isCalled { get; }
+
 		public Patient (
 			long depId, long newId, string newFirstName, string newLastName, string newDetails, 
-			bool isWIPValue, string newPriority, DateTime createTime, DateTime updateTime
+			bool isWIPValue, string newPriority, DateTime createTime, DateTime updateTime,
+			bool isCalledValue
 		) {
 			departmentId = depId;
 			id = newId;
@@ -28,6 +31,7 @@ namespace Backend {
 			priority = newPriority;
 			createdAt = createTime;
 			updatedAt = updateTime;
+			isCalled = isCalledValue;
 		}
 	}
 }
