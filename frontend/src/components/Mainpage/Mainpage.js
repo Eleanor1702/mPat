@@ -65,7 +65,7 @@ class Mainpage extends React.Component {
 		//Delete patient from database
 		const { depId } = this.state;
 		const { userToken } = this.props;
-		axios.delete("http://localhost:5000/departments/" + depId + "/patients/" + patient.id, {
+		axios.put("http://localhost:5000/departments/" + depId + "/patients/" + patient.id + "/call" , {}, {
 			headers: {
 				token: userToken
 			}
@@ -194,7 +194,7 @@ class Mainpage extends React.Component {
 				<div className="columns is-mobile">
 					<div className="column is-one-third is-offset-one-third">
 						<button 
-							className="button is-success is-size-5 has-icons-left has-text-weight-medium is-fullwidth pt-4 pb-6"
+							className="button is-success is-size-5 has-icons-left has-text-weight-medium is-fullwidth has-height-5"
 							onClick={this.handleNextPatientCallRequest}
 							disabled={nextPatient === null}
 						>
@@ -276,7 +276,7 @@ class Mainpage extends React.Component {
 					priority = {"Emergent"}
 					color = {"danger"}
 					depId = {depId}
-					patients = {patients.filter(a => a.priority === "Emergent")}
+					patients = {patients.filter(a => a.priority === "Emergent" && a.isWIP === false)}
 					userToken = {userToken}
 					deadline = {15}
 					nextPatient = {this.callNextPatient}
@@ -288,7 +288,7 @@ class Mainpage extends React.Component {
 					priority = {"Urgent"}
 					color = {"warning"}
 					depId = {depId}
-					patients = {patients.filter(a => a.priority === "Urgent")}
+					patients = {patients.filter(a => a.priority === "Urgent" && a.isWIP === false)}
 					userToken = {userToken}
 					deadline = {30}
 					nextPatient = {this.callNextPatient}
@@ -300,7 +300,7 @@ class Mainpage extends React.Component {
 					priority = {"Less Urgent"}
 					color = {"success"}
 					depId = {depId}
-					patients = {patients.filter(a => a.priority === "Less Urgent")}
+					patients = {patients.filter(a => a.priority === "Less Urgent" && a.isWIP === false)}
 					userToken = {userToken}
 					deadline = {60}
 					nextPatient = {this.callNextPatient}
@@ -312,7 +312,7 @@ class Mainpage extends React.Component {
 					priority = {"Non Urgent"}
 					color = {"info"}
 					depId = {depId}
-					patients = {patients.filter(a => a.priority === "Non Urgent")}
+					patients = {patients.filter(a => a.priority === "Non Urgent" && a.isWIP === false)}
 					userToken = {userToken}
 					deadline = {120}
 					nextPatient = {this.callNextPatient}
