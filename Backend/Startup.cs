@@ -16,7 +16,7 @@ namespace Backend
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
-            //CORS Services
+            //CORS Services => Allow only Frontend (in this case, localhost port 3000)
             services.AddCors(options => {
                 options.AddPolicy("AllowCors", builder => {
                     builder.WithOrigins("http://localhost:3000")
