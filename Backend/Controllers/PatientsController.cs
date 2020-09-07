@@ -95,5 +95,13 @@ namespace Backend.Controllers {
 				return NoContent();
 			});
 		}
-    }
+
+		[HttpPut("{patId}/call")]
+		public IActionResult callPatient(long urlDepId, long patId) {
+			return ValidateTokenAndExecute(urlDepId, (depId) => {
+				patService.callPatient(urlDepId, patId);
+				return NoContent();
+			});
+		}
+   }
 }
