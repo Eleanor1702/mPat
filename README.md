@@ -6,7 +6,7 @@ The mPat system was build to give patients a better insight regarding their wait
 
 The following sections provide a basic overview of the mPat platform and how to develop and run the platform. For further details please refer to the bachelor's thesis of this project.
 
-### Main features of mPat
+### ⭐️ Main features of mPat
 
 - Authentication using credentials stored with organisations
 
@@ -22,7 +22,7 @@ The following sections provide a basic overview of the mPat platform and how to 
 
 - Visualization of patient waiting time and queue position in mobile application when connected
 
-### Frameworks and technologies
+### 🧰 Frameworks and technologies
 
 - Database: MySQL version 8.0.19
 
@@ -32,7 +32,7 @@ The following sections provide a basic overview of the mPat platform and how to 
 
 - Mobile Application: React Native version 0.62.2 and Expo 38.0.8 using Node.js
 
-### Overview of the architecture
+### 📐 Overview of the architecture
 
 ##### Backend
 
@@ -57,9 +57,9 @@ React applications are composed of several components. At the root of the mPat f
 
 The mobile application is based on React as well by using the React Native framework. It is therefore similarly structured to the frontend. The biggest difference is the navigation of screens which in the mobile application is not managed by the root component but by a library called **React Navigation**. The library employs native functionalities of the mobile operating system to switch between screens depending on the interaction of the user. An additional difference between the frontend and the mobile application is no global state in the root component. Each screen manages its own state and shares it through sending the necessary data to a different screen when switching to it.
 
-Other than that, the mobile application consists of `Screen` components similar to the frontend with one root component that sets of the navigation through the previously mentioned library.
+Other than that, the mobile application consists of **Screen** components similar to the frontend with one root component that sets of the navigation through the previously mentioned library.
 
-### Development Instructions
+### 🛠 Development Instructions
 
 #### 🗂️ MySQL Setup
 ---
@@ -524,9 +524,9 @@ Other than that, the mobile application consists of `Screen` components similar 
 
         - Open the Expo app and scan the QR Code with the QR Scanner function provided by Expo and you will be redirected to the App.
 
-### Important configuration
+### 🔧 Important configuration
 
-##### Frontend port
+##### 🌐 Frontend port
 
 The default port of the frontend is **3000** which can be modified through the setting of an environment variable before running the frontend:
 
@@ -542,11 +542,11 @@ The default port of the frontend is **3000** which can be modified through the s
 	export PORT=8000
 	```
 
-##### Backend Port
+##### ⚙️ Backend Port
 
 The default port of the backend is **5000** which can be modified through the property file of the backend located at **{pathToBackendProject}\Properties\launchSettings.json**. It contains a setting called **applicationUrl** which specifies how the backend can be accessed. After changing the port of the backend, **all AJAX requests** being executed in the frontend as well as the mobile application **must** be modified as well.
 
-##### Database changes
+##### 🗂 Database changes
 
 The database schema is managed through a DDL file located at **{pathToBackendProject}\DDL\Schema.ddl**. Database changes should therefore be implemented in this schema file. Afterwards, the database has to be recreated by connecting to the MySQL/MariaDB Command Line Interface and executing:
 
@@ -556,7 +556,7 @@ DROP DATABASE mPat;
 
 Then the schema can be imported again as outlined in the **MySQL Setup** section of this README.
 
-### Current state of the application
+### 🩺 Current state of the application
 
 In its current form, mPat is fully working and has no known bugs. There are several places that could be extended however:
 
