@@ -47,13 +47,13 @@ The backend is divided in three layers:
 
 - Models: In the REST API models are data containers for the results from the database as well as for the serialization and deserialization of data from and to JSON.
 
-##### 🌐Frontend
+##### 🌐 Frontend
 
 The frontend is a React single-page application. In single-page applications all static resources are initially loaded on the first request and the content of the page is replaced using JavaScript according to the interaction of the user. Therefore, the page itself does not have to be reloaded each time when interacting with it which increases the responsiveness of the application. To load data from the REST API, the frontend uses AJAX requests which is a technology to execute HTTP requests using JavaScript.
 
 React applications are composed of several components. At the root of the mPat frontend application is the **App** component which stores all the necessary state of the frontend. According to its current state, the **App** component shows the respective **Screen** component to the user. **Screen** components consist of further components depending on their complexity and needs.
 
-##### 📱Mobile Application
+##### 📱 Mobile Application
 
 The mobile application is based on React as well by using the React Native framework. It is therefore similarly structured to the frontend. The biggest difference is the navigation of screens which in the mobile application is not managed by the root component but by a library called **React Navigation**. The library employs native functionalities of the mobile operating system to switch between screens depending on the interaction of the user. An additional difference between the frontend and the mobile application is no global state in the root component. Each screen manages its own state and shares it through sending the necessary data to a different screen when switching to it.
 
