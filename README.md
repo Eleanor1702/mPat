@@ -475,10 +475,10 @@ Other than that, the mobile application consists of **Screen** components simila
 	    npm install expo-cli --global
 	    ```
 
-    > **Required**
+    > **[Required]**
     Start the database by launcing XAMPP and then starting Apache and MySQL. Please refer to the MySQL Setup section for further details.
 
-    > **Required**
+    > **[Required]**
     In a fresh **cmd** window, navigate to the backend folder and build/run the backend project. Please refer to the Backend Setup section for further details.
 
     - Now, build and run the mPatApp project:
@@ -556,10 +556,10 @@ Other than that, the mobile application consists of **Screen** components simila
 	    npm install expo-cli --global
 	    ```
 
-    > **Required**
+    > **[Required]**
     Start the database by launcing XAMPP and then starting Apache and MySQL. Please refer to the MySQL Setup section for further details.
 
-    > **Required**
+    > **[Required]**
     In a fresh **Terminal** window, navigate to the backend folder and build/run the backend project. Please refer to the Backend Setup section for further details.
 
     - Now, build and run the mPatApp project:
