@@ -490,7 +490,7 @@ Other than that, the mobile application consists of **Screen** components simila
 
     - If the app refused to be hosted and expo encountered some issues, try typing this command:
         ```
-      expo r -
+      expo r -c
       ```
 
     - A browser window should open as well as a QR code should be visible in the **cmd**.
@@ -576,7 +576,7 @@ Other than that, the mobile application consists of **Screen** components simila
 
     - If the app refused to be hosted and expo encountered some issues, try typing this command:
         ```
-      expo r -
+      expo r - c
       ```
 
     - A browser window should open as well as a QR code should be visible in the **Terminal**.
