@@ -309,10 +309,43 @@ Other than that, the mobile application consists of **Screen** components simila
 	        | desired_organisationName | Numeric and Characters |
 	        | desired_organisationPassKey |Numeric and Characters |
 
-    - The batch file can be executed (In the `xampp\mysql\bin` folder) by running: **(Replace {pathToBackendProject} with the correct path)**
+    - The batch file can be executed (In the `xampp\mysql\bin` folder) by running: **(Replace {pathToBackendProject} with the correct path)** **(Replace {MySQL user}, {User password}, {The Database}, {desired_RegistrationNumber}, {desired_organisationName}, {desired_organisationPassKey} with the correct parameters)**
         ```
-	    {pathToBackendProject}\DDL\AddOrganisation.bat developer developer mPat desired_RegistrationNumber desired_organisationName desired_organisationPassKey
-	    ```
+        {pathToBackendProject}\DDL\AddOrganisation.bat {MySQL user} {User password} {The Database} {desired_RegistrationNumber} {desired_organisationName} {desired_organisationPassKey}
+        ```
+
+- Alternatively (Add Organisation manually):
+    - Using a new and fresh **cmd** window, navigate to the following folder:
+      ```
+      cd {pathToXAMPP}\mysql\bin
+      ```
+    - In the same folder connect to MySQL, by typing the following command:
+        ```
+        mysql -u developer -p
+        ```
+    - You will be asked for the Password, which is `developer`.
+
+    - Switch to the `mPat`database, by entering:
+        ```
+        USE mPat;
+        ```
+    - Now type the following command to add a new organisation: **(Replace {desired_RegistrationNumber}, {desired_organisationName}, {desired_organisationPassKey} with the correct parameters)**
+        ```
+        INSERT INTO Organisation (
+          RegistrationNr,
+          Name,
+          PassKey
+        ) VALUES (
+          "{desired_RegistrationNumber}",
+          "{desired_organisationName}",
+          SHA2("{desired_organisationPassKey}", 256)
+        );
+        ```
+    - **[optional]** Check if the organisation exists, by typing:
+        ```
+        SELECT * FROM Organisation;
+        ```
+    - If the Organisation is present in the table, then you are done, otherwise repeat the steps again.
 
 - Create a new department:
     - After the creation of an organisation and the successful setup of the frontend and the backend, a login in the Backoffice is permitted.
@@ -348,10 +381,43 @@ Other than that, the mobile application consists of **Screen** components simila
 	        | desired_organisationName | Numeric and Characters |
 	        | desired_organisationPassKey |Numeric and Characters |
 
-    - The bash file can be executed (In the `/Applications/XAMPP/xamppfiles/bin` folder) by running: **(Replace {pathToBackendProject} with the correct path)**
+    - The bash file can be executed (In the `/Applications/XAMPP/xamppfiles/bin` folder) by running: **(Replace {pathToBackendProject} with the correct path)** **(Replace {MySQL user}, {User password}, {The Database}, {desired_RegistrationNumber}, {desired_organisationName}, {desired_organisationPassKey} with the correct parameters)**
         ```
-	    {pathToBackendProject}/DDL/AddOrganisation.sh developer developer mPat desired_RegistrationNumber desired_organisationName desired_organisationPassKey
+	    {pathToBackendProject}/DDL/AddOrganisation.sh {MySQL user} {User password} {The Database} {desired_RegistrationNumber} {desired_organisationName} {desired_organisationPassKey}
 	    ```
+
+- Alternatively (Add Organisation manually):
+    - Using a new and fresh **cmd** window, navigate to the following folder:
+      ```
+      cd /Applications/XAMPP/xamppfiles/bin
+      ```
+    - In the same folder connect to MySQL, by typing the following command:
+        ```
+        ./mysql -u developer -p
+        ```
+    - You will be asked for the Password, which is `developer`.
+
+    - Switch to the `mPat`database, by entering:
+        ```
+        USE mPat;
+        ```
+    - Now type the following command to add a new organisation: **(Replace {desired_RegistrationNumber}, {desired_organisationName}, {desired_organisationPassKey} with the correct parameters)**
+        ```
+        INSERT INTO Organisation (
+          RegistrationNr,
+          Name,
+          PassKey
+        ) VALUES (
+          "{desired_RegistrationNumber}",
+          "{desired_organisationName}",
+          SHA2("{desired_organisationPassKey}", 256)
+        );
+        ```
+    - **[optional]** Check if the organisation exists, by typing:
+        ```
+        SELECT * FROM Organisation;
+        ```
+    - If the Organisation is present in the table, then you are done, otherwise repeat the steps again.
 
 - Create a new department:
     - After the creation of an organisation and the successful setup of the frontend and the backend, a login in the Backoffice is permitted.
@@ -567,3 +633,4 @@ In its current form, mPat is fully working and has no known bugs. There are seve
 - Storage of the current patient ID in the app: The mobile application currently does not store the patient ID in persistent storage but only in-memory. Consequently, if a user completely closes the application or restarts the mobile device, a new connection to the organisation has to be established when opening the mPat application again. React Native offers capabilities to store the ID in persistent storage which could be employed for this feature.
 
 For further potential work please refer to the **Discussion** section of the bachelor's thesis.
+‚‚
