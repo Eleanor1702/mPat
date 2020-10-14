@@ -488,6 +488,11 @@ Other than that, the mobile application consists of **Screen** components simila
 
     - **[optional]** If Expo CLI is not available and you are asked to install it globally, then please write: `Y`
 
+    - If the app refused to be hosted and expo encountered some issues, try typing this command:
+        ```
+      expo r -
+      ```
+
     - A browser window should open as well as a QR code should be visible in the **cmd**.
 
 - Open the app on your mobile device:
@@ -568,6 +573,11 @@ Other than that, the mobile application consists of **Screen** components simila
 	    ```
 
     - **[optional]** If Expo CLI is not available and you are asked to install it globally, then please write: `Y`
+
+    - If the app refused to be hosted and expo encountered some issues, try typing this command:
+        ```
+      expo r -
+      ```
 
     - A browser window should open as well as a QR code should be visible in the **Terminal**.
 
