@@ -1,5 +1,5 @@
 #This script is provided only for the use of project developer
-#This script adds new organsation to the database allowing the new organisation to 
+#This script adds new organsation to the database allowing the new organisation to
 #access the plattform and its features
 
 #parameters
@@ -11,7 +11,7 @@ ORG_NAME=$5
 PASSKEY=$6
 #HERE-DOC to pass mysql command
 #Password is being hashed by SHA-256 (Hash Funktion)
-mysql -u $USER -p$PASS $DB << EOF
+./mysql -u $USER -p$PASS $DB << EOF
 INSERT INTO Organisation (
     RegistrationNr,
     Name,
